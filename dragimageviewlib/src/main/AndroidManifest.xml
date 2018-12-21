@@ -1,0 +1,9 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.junglezhang.dragimageviewlib">
+
+    <application>
+        <activity
+            android:name=".DragImageViewer"
+            android:theme="@style/FullScreenStyle" />
+    </application>
+</manifest>

@@ -20,12 +20,13 @@ public class BaseAnimCloseViewPager extends ViewPager {
 
     public interface IAnimClose {
         boolean canDrag();
+
         void onPictureClick();
 
         void onPictureRelease(View view);
     }
 
-    protected float screenHeight ;
+    protected float screenHeight;
     protected View currentShowView;
     protected VelocityTracker mVelocityTracker;
     protected IAnimClose iAnimClose;
@@ -61,7 +62,7 @@ public class BaseAnimCloseViewPager extends ViewPager {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                Log.e(TAG,"onPageScrollStateChanged state:"+state);
+                Log.e(TAG, "onPageScrollStateChanged state:" + state);
                 currentPageStatus = state;
             }
         });

@@ -15,9 +15,9 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    //图片随便找的，加载不出来可以换别的
-    private val images = arrayOf("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1503684240091&di=a9d641f8424c561d6b5b6051c3b164f5&imgtype=0&src=http%3A%2F%2Ff.hiphotos.baidu.com%2Fzhidao%2Fpic%2Fitem%2Fd009b3de9c82d158d14de70c800a19d8bd3e42bb.jpg"
-            , "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1503684322968&di=adad2ba7aaeb3c70cf8233a99b5c07ad&imgtype=jpg&src=http%3A%2F%2Fimg2.imgtn.bdimg.com%2Fit%2Fu%3D1312683452%2C3087431303%26fm%3D214%26gp%3D0.jpg")
+    private val banner1 = "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3609500805,1555342859&fm=26&gp=0.jpg"
+    private val banner2 = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1544591288175&di=d82793880e749f5c8992427887d26f5e&imgtype=0&src=http%3A%2F%2Fjtgeek.com%2Fwp-content%2Fuploads%2Fandroid-logo.jpg"
+    private val images = arrayOf(banner1, banner2)
 
     private var mReenterState: Bundle? = null
 
@@ -50,12 +50,11 @@ class MainActivity : AppCompatActivity() {
                 if (mReenterState != null) {
                     val index = mReenterState!!.getInt("index", 0)
                     sharedElements.clear()
-                    sharedElements["tansition_view"] = ll_container.getChildAt(index)
+                    sharedElements["share_view"] = ll_container.getChildAt(index)
                     mReenterState = null
                 }
             }
         })
-
     }
 
     override fun onActivityReenter(resultCode: Int, data: Intent) {

@@ -15,10 +15,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.junglezhang.dragimageviewlib.widget.BaseAnimCloseViewPager;
 
 import java.util.ArrayList;
@@ -27,39 +26,55 @@ import java.util.Map;
 
 
 /**
+ * ViewPager容器
  */
 public class DragImageViewer extends AppCompatActivity {
 
     private int firstDisplayImageIndex = 0;
     private boolean newPageSelected = false;
-    private ImageView mCurImage;
+    private PhotoView mCurImage;
     private BaseAnimCloseViewPager imageViewPager;
     private List<String> pictureList;
 
     PagerAdapter adapter;
 
-    boolean canDrag =false;
+    boolean canDrag = false;
 
-    public static void startWithElement(Activity context, ArrayList<String> urls,
-                                        int firstIndex, View view) {
+    /**
+     * 带有共享元素启动
+     *
+     * @param context
+     * @param urls
+     * @param firstIndex
+     */
+    public static void startWithoutElement(Activity context, ArrayList<String> urls, int firstIndex) {
         Intent intent = new Intent(context, DragImageViewer.class);
         intent.putStringArrayListExtra("urls", urls);
         intent.putExtra("index", firstIndex);
-        ActivityOptionsCompat compat = null;
-        if (view == null) {
-            compat = ActivityOptionsCompat.makeSceneTransitionAnimation(context);
-        } else {
-            compat = ActivityOptionsCompat.makeSceneTransitionAnimation(context, view,
-                    "tansition_view");
-        }
+        context.startActivity(intent);
+    }
+
+    /**
+     * 不带共享元素启动
+     *
+     * @param context
+     * @param urls
+     * @param firstIndex
+     * @param shareView  要共享的控件
+     */
+    public static void startWithElement(Activity context, ArrayList<String> urls,
+                                        int firstIndex, View shareView) {
+        Intent intent = new Intent(context, DragImageViewer.class);
+        intent.putStringArrayListExtra("urls", urls);
+        intent.putExtra("index", firstIndex);
+        ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(context, shareView,
+                "share_view");
         ActivityCompat.startActivity(context, intent, compat.toBundle());
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_photo_browse);
         initView();
     }
@@ -68,20 +83,20 @@ public class DragImageViewer extends AppCompatActivity {
         pictureList = getIntent().getStringArrayListExtra("urls");
         firstDisplayImageIndex = Math.min(getIntent().getIntExtra("index", firstDisplayImageIndex), pictureList.size());
 
-        imageViewPager = (BaseAnimCloseViewPager) findViewById(R.id.viewpager);
+        imageViewPager = findViewById(R.id.viewpager);
         setViewPagerAdapter();
 
         setEnterSharedElementCallback(new SharedElementCallback() {
 
             @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                ViewGroup layout = (ViewGroup) imageViewPager.findViewWithTag(imageViewPager.getCurrentItem());
+                ViewGroup layout = imageViewPager.findViewWithTag(imageViewPager.getCurrentItem());
                 if (layout == null) {
                     return;
                 }
                 View sharedView = layout.findViewById(R.id.image_view);
                 sharedElements.clear();
-                sharedElements.put("tansition_view", sharedView);
+                sharedElements.put("share_view", sharedView);
             }
         });
     }
@@ -113,7 +128,7 @@ public class DragImageViewer extends AppCompatActivity {
             public Object instantiateItem(ViewGroup container, int position) {
                 View layout;
                 layout = LayoutInflater.from(DragImageViewer.this).inflate(R.layout.layout_browse, null);
-//                layout.setOnClickListener(onClickListener);
+                layout.setOnClickListener(onClickListener);
                 container.addView(layout);
                 layout.setTag(position);
 
@@ -215,7 +230,7 @@ public class DragImageViewer extends AppCompatActivity {
             });
             return;
         }
-        mCurImage = (ImageView) currentLayout.findViewById(R.id.image_view);
+        mCurImage = currentLayout.findViewById(R.id.image_view);
         imageViewPager.setCurrentShowView(mCurImage);
     }
 

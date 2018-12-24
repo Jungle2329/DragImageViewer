@@ -39,6 +39,23 @@ public class ScaleViewPager extends BaseAnimCloseViewPager {
     }
 
     @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        switch (ev.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                mDownX = ev.getRawX();
+                mDownY = ev.getRawY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                final float mUpY = ev.getRawY();//->mDownY
+                if (Math.abs(mUpY - mDownY) > 70) {//y轴移动了超过阈值就拦截焦点自行处理
+                    return true;
+                }
+                break;
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (currentStatus == STATUS_REBACK)
             return false;
@@ -72,8 +89,6 @@ public class ScaleViewPager extends BaseAnimCloseViewPager {
                 } else {
                     setupReback(mUpX, mUpY);
                 }
-
-
                 break;
         }
         return super.onTouchEvent(ev);

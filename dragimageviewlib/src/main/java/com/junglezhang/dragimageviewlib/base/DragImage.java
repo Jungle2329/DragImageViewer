@@ -7,5 +7,5 @@ package com.junglezhang.dragimageviewlib.base;
  */
 
 public interface DragImage {
-    String getImageUrl();
+    String getDragImageUrl();
 }

@@ -53,7 +53,7 @@ public class DragImageViewer extends AppCompatActivity {
     public static <T extends DragImage> void startWithElement(Activity context, T image,
                                                               int firstIndex, View shareView) {
         ArrayList<String> urls = new ArrayList<>();
-        urls.add(image.getImageUrl());
+        urls.add(image.getDragImageUrl());
         Intent intent = new Intent(context, DragImageViewer.class);
         intent.putStringArrayListExtra("urls", urls);
         intent.putExtra("index", firstIndex);
@@ -71,11 +71,11 @@ public class DragImageViewer extends AppCompatActivity {
      * @param firstIndex
      * @param shareView  要共享的控件
      */
-    public static <T extends DragImage> void startWithElement(Activity context, ArrayList<T> images,
+    public static <T extends DragImage> void startWithElement(Activity context, List<T> images,
                                         int firstIndex, View shareView) {
         ArrayList<String> urls = new ArrayList<>();
         for(T t : images) {
-            urls.add(t.getImageUrl());
+            urls.add(t.getDragImageUrl());
         }
         Intent intent = new Intent(context, DragImageViewer.class);
         intent.putStringArrayListExtra("urls", urls);

@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.junglezhang.dragimageviewlib.base.DragImage;
 import com.junglezhang.dragimageviewlib.widget.BaseAnimCloseViewPager;
 
 import java.util.ArrayList;
@@ -41,30 +42,41 @@ public class DragImageViewer extends AppCompatActivity {
     boolean canDrag = false;
 
     /**
-     * 带有共享元素启动
+     * 带共享元素启动
+     * 单图
      *
      * @param context
-     * @param urls
-     * @param firstIndex
-     */
-    public static void startWithoutElement(Activity context, ArrayList<String> urls, int firstIndex) {
-        Intent intent = new Intent(context, DragImageViewer.class);
-        intent.putStringArrayListExtra("urls", urls);
-        intent.putExtra("index", firstIndex);
-        context.startActivity(intent);
-    }
-
-    /**
-     * 不带共享元素启动
-     *
-     * @param context
-     * @param urls
+     * @param image
      * @param firstIndex
      * @param shareView  要共享的控件
      */
-    public static void startWithElement(Activity context, ArrayList<String> urls,
-                                        int firstIndex, View shareView) {
+    public static <T extends DragImage> void startWithElement(Activity context, T image,
+                                                              int firstIndex, View shareView) {
+        ArrayList<String> urls = new ArrayList<>();
+        urls.add(image.getImageUrl());
+        Intent intent = new Intent(context, DragImageViewer.class);
+        intent.putStringArrayListExtra("urls", urls);
+        intent.putExtra("index", firstIndex);
+        ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(context, shareView,
+                "share_view");
+        ActivityCompat.startActivity(context, intent, compat.toBundle());
+    }
 
+    /**
+     * 带共享元素启动
+     * 多图
+     *
+     * @param context
+     * @param images
+     * @param firstIndex
+     * @param shareView  要共享的控件
+     */
+    public static <T extends DragImage> void startWithElement(Activity context, ArrayList<T> images,
+                                        int firstIndex, View shareView) {
+        ArrayList<String> urls = new ArrayList<>();
+        for(T t : images) {
+            urls.add(t.getImageUrl());
+        }
         Intent intent = new Intent(context, DragImageViewer.class);
         intent.putStringArrayListExtra("urls", urls);
         intent.putExtra("index", firstIndex);

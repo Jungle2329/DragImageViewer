@@ -64,6 +64,7 @@ public class DragImageViewer extends AppCompatActivity {
      */
     public static void startWithElement(Activity context, ArrayList<String> urls,
                                         int firstIndex, View shareView) {
+
         Intent intent = new Intent(context, DragImageViewer.class);
         intent.putStringArrayListExtra("urls", urls);
         intent.putExtra("index", firstIndex);

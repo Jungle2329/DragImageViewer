@@ -2,8 +2,8 @@ package com.junglezhang.dragimageviewlib;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.SharedElementCallback;
@@ -11,15 +11,16 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.junglezhang.dragimageviewlib.base.DragImage;
-import com.junglezhang.dragimageviewlib.widget.BaseAnimCloseViewPager;
+import com.junglezhang.dragimageviewlib.utils.GlideUtils;
+import com.junglezhang.dragimageviewlib.widget.BaseDragViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,22 +28,23 @@ import java.util.Map;
 
 
 /**
- * ViewPager容器
+ * Created by Jungle on 2018/12/24 0024.
+ *
+ * @desc ViewPager容器
  */
 public class DragImageViewer extends AppCompatActivity {
 
     private int firstDisplayImageIndex = 0;
     private boolean newPageSelected = false;
     private PhotoView mCurImage;
-    private BaseAnimCloseViewPager imageViewPager;
+    private BaseDragViewPager imageViewPager;
     private List<String> pictureList;
+    private TextView tv_current_page;
+    private PagerAdapter adapter;
+    private boolean isStart = true;
 
-    PagerAdapter adapter;
-
-    boolean canDrag = false;
 
     /**
-     * 带共享元素启动
      * 单图
      *
      * @param context
@@ -63,7 +65,6 @@ public class DragImageViewer extends AppCompatActivity {
     }
 
     /**
-     * 带共享元素启动
      * 多图
      *
      * @param context
@@ -72,9 +73,9 @@ public class DragImageViewer extends AppCompatActivity {
      * @param shareView  要共享的控件
      */
     public static <T extends DragImage> void startWithElement(Activity context, List<T> images,
-                                        int firstIndex, View shareView) {
+                                                              int firstIndex, View shareView) {
         ArrayList<String> urls = new ArrayList<>();
-        for(T t : images) {
+        for (T t : images) {
             urls.add(t.getDragImageUrl());
         }
         Intent intent = new Intent(context, DragImageViewer.class);
@@ -95,22 +96,43 @@ public class DragImageViewer extends AppCompatActivity {
     public void initView() {
         pictureList = getIntent().getStringArrayListExtra("urls");
         firstDisplayImageIndex = Math.min(getIntent().getIntExtra("index", firstDisplayImageIndex), pictureList.size());
-
+        ((TextView) findViewById(R.id.tv_total_page)).setText(String.valueOf(pictureList.size()));
+        tv_current_page = findViewById(R.id.tv_current_page);
+        tv_current_page.setText(String.valueOf(firstDisplayImageIndex + 1));
         imageViewPager = findViewById(R.id.viewpager);
         setViewPagerAdapter();
 
         setEnterSharedElementCallback(new SharedElementCallback() {
 
             @Override
+            public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+                super.onSharedElementStart(sharedElementNames, sharedElements, sharedElementSnapshots);
+            }
+
+            @Override
+            public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+                super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
+                isStart = false;
+            }
+
+            @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                //onMapSharedElements 只有在页面打开和关闭的时候调用
+                //页面进入的时候先调用onMapSharedElements,onSharedElementStart，后调用onSharedElementEnd
+                //页面退出的时候先调用onMapSharedElements,onSharedElementEnd，后调用onSharedElementStart
                 ViewGroup layout = imageViewPager.findViewWithTag(imageViewPager.getCurrentItem());
                 if (layout == null) {
                     return;
                 }
-                View sharedView = layout.findViewById(R.id.image_view);
+                PhotoView sharedView = layout.findViewById(R.id.image_view);
                 sharedElements.clear();
                 sharedElements.put("share_view", sharedView);
+                //这里重新适配一下图片，防止gif图在启动的时候停止动画
+                if (isStart) {
+                    GlideUtils.loadImage(DragImageViewer.this, pictureList.get(firstDisplayImageIndex), sharedView);
+                }
             }
+
         });
     }
 
@@ -122,14 +144,9 @@ public class DragImageViewer extends AppCompatActivity {
             }
 
             @Override
-            public void notifyDataSetChanged() {
-                super.notifyDataSetChanged();
-            }
-
-            @Override
             public void destroyItem(ViewGroup container, int position, Object object) {
-                View layout = (View) object;
-                container.removeView(layout);
+//                View layout = (View) object;
+//                container.removeView(layout);
             }
 
             @Override
@@ -137,18 +154,18 @@ public class DragImageViewer extends AppCompatActivity {
                 return (view == object);
             }
 
+            @NonNull
             @Override
             public Object instantiateItem(ViewGroup container, int position) {
-                View layout;
-                layout = LayoutInflater.from(DragImageViewer.this).inflate(R.layout.layout_browse, null);
+                View layout = LayoutInflater.from(DragImageViewer.this).inflate(R.layout.layout_browse, null);
+                ImageView iv = layout.findViewById(R.id.image_view);
+                GlideUtils.loadImage(DragImageViewer.this, pictureList.get(position), iv);
                 layout.setOnClickListener(onClickListener);
                 container.addView(layout);
                 layout.setTag(position);
-
                 if (position == firstDisplayImageIndex) {
-                    onViewPagerSelected(position);
+                    updateCurrentImageView(position);
                 }
-
                 return layout;
 
             }
@@ -167,13 +184,14 @@ public class DragImageViewer extends AppCompatActivity {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 if (positionOffset == 0f && newPageSelected) {
                     newPageSelected = false;
-                    onViewPagerSelected(position);
+                    updateCurrentImageView(position);
                 }
             }
 
             @Override
             public void onPageSelected(int position) {
                 newPageSelected = true;
+                tv_current_page.setText(String.valueOf(position + 1));
             }
 
             @Override
@@ -181,11 +199,7 @@ public class DragImageViewer extends AppCompatActivity {
 
             }
         });
-        imageViewPager.setiAnimClose(new BaseAnimCloseViewPager.IAnimClose() {
-            @Override
-            public boolean canDrag() {
-                return canDrag;
-            }
+        imageViewPager.setiAnimClose(new BaseDragViewPager.IAnimClose() {
 
             @Override
             public void onPictureClick() {
@@ -207,28 +221,6 @@ public class DragImageViewer extends AppCompatActivity {
         }
     };
 
-
-    private void onViewPagerSelected(int position) {
-        updateCurrentImageView(position);
-        setImageView(pictureList.get(position));
-    }
-
-
-    /**
-     * 设置图片
-     *
-     * @param path
-     */
-    private void setImageView(final String path) {
-        if (mCurImage.getDrawable() != null)//判断是否已经加载了图片，避免闪动
-            return;
-        if (TextUtils.isEmpty(path)) {
-            mCurImage.setBackgroundColor(Color.GRAY);
-            return;
-        }
-        canDrag = false;
-        Glide.with(this).load(path).into(mCurImage);
-    }
 
     // 初始化每个view的image
     protected void updateCurrentImageView(final int position) {

@@ -12,15 +12,15 @@ import android.view.View;
 
 
 /**
- * Created by Laughing on 2017/7/10.
+ * Created by Jungle on 2018/12/24 0024.
+ *
+ * @desc ViewPager基类
  */
-public class BaseAnimCloseViewPager extends ViewPager {
+public class BaseDragViewPager extends ViewPager {
 
     private static final String TAG = "BaseAnimCloseViewPager";
 
     public interface IAnimClose {
-        boolean canDrag();
-
         void onPictureClick();
 
         void onPictureRelease(View view);
@@ -36,12 +36,12 @@ public class BaseAnimCloseViewPager extends ViewPager {
         this.iAnimClose = iAnimClose;
     }
 
-    public BaseAnimCloseViewPager(Context context) {
+    public BaseDragViewPager(Context context) {
         super(context);
         init(context);
     }
 
-    public BaseAnimCloseViewPager(Context context, AttributeSet attrs) {
+    public BaseDragViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }

@@ -7,9 +7,7 @@ import com.junglezhang.dragimageviewlib.base.DragImage
  * @desc TODO
  */
 class ImageEntity(var image: String = "") : DragImage {
-
-    override fun getImageUrl(): String {
+    override fun getDragImageUrl(): String {
         return image
     }
-
 }

@@ -8,15 +8,15 @@ import android.support.v4.app.SharedElementCallback
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.ImageView
-import com.bumptech.glide.Glide
 import com.junglezhang.dragimageviewlib.DragImageViewer
+import com.junglezhang.dragimageviewlib.utils.GlideUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     private val banner1 = "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3609500805,1555342859&fm=26&gp=0.jpg"
-    private val banner2 = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1544591288175&di=d82793880e749f5c8992427887d26f5e&imgtype=0&src=http%3A%2F%2Fjtgeek.com%2Fwp-content%2Fuploads%2Fandroid-logo.jpg"
+    private val banner2 = "http://anshang.ldspring.com/data/upload/education/2018/22222222.gif"
 
     private var mReenterState: Bundle? = null
 
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 
         for (i in 0 until 2) {
             val imageView = ll_container.getChildAt(i) as ImageView
-            Glide.with(this).load(pictureList[i].image).into(imageView)
+            GlideUtils.loadImage(this, pictureList[i].image, imageView)
             imageView.setOnClickListener { DragImageViewer.startWithElement(this@MainActivity, pictureList, i, imageView) }
 
         }

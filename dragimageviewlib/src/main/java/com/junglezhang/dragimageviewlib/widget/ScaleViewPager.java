@@ -8,11 +8,13 @@ import android.view.MotionEvent;
 import com.nineoldandroids.view.ViewHelper;
 
 /**
- * Created by Laughing on 2017/7/4.
- * <p/>
+ * Created by Jungle on 2018/12/24 0024.
+ *
+ * @desc ViewPager实现类
  * 只有y轴运动才能放大缩小屏幕，往y轴方向 向上提是放大或者不变，往y轴方向 向下拉是缩小，或者缩小到极限
+ * 调用了PhotoView实现双击放大和多点触控放大缩小功能
  */
-public class ScaleViewPager extends BaseAnimCloseViewPager {
+public class ScaleViewPager extends BaseDragViewPager {
 
     public static final int STATUS_NORMAL = 0;
     public static final int STATUS_MOVING = 1;
@@ -47,7 +49,8 @@ public class ScaleViewPager extends BaseAnimCloseViewPager {
                 break;
             case MotionEvent.ACTION_MOVE:
                 final float mUpY = ev.getRawY();//->mDownY
-                if (Math.abs(mUpY - mDownY) > 70) {//y轴移动了超过阈值就拦截焦点自行处理
+                if (Math.abs(mUpY - mDownY) > 60) {
+                    //y轴移动了超过阈值就拦截焦点自行处理，否则交给photoview来处理
                     return true;
                 }
                 break;

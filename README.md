@@ -1,6 +1,12 @@
 # DragImageViewer
 [![](https://jitpack.io/v/Jungle2329/DragImageViewer.svg)](https://jitpack.io/#Jungle2329/DragImageViewer)
 
+引入
+```
+dependencies {
+        implementation 'com.github.Jungle2329:DragImageViewer:Tag'
+}
+```
 
 启动DragImageViewer
 ```

@@ -34,6 +34,8 @@ import java.util.Map;
  */
 public class DragImageViewer extends AppCompatActivity {
 
+    public static final String SHARE_VIEW_TAG = "share_view";
+
     private int firstDisplayImageIndex = 0;
     private boolean newPageSelected = false;
     private PhotoView mCurImage;
@@ -43,6 +45,17 @@ public class DragImageViewer extends AppCompatActivity {
     private PagerAdapter adapter;
     private boolean isStart = true;
 
+
+    /**
+     * 无需共享元素动画的单图
+     * @param context
+     * @param image
+     * @param firstIndex
+     * @param <T>
+     */
+    public static <T extends DragImage> void startWithoutElement(Activity context, T image, int firstIndex) {
+        startWithElement(context, image, firstIndex, null);
+    }
 
     /**
      * 单图
@@ -59,9 +72,24 @@ public class DragImageViewer extends AppCompatActivity {
         Intent intent = new Intent(context, DragImageViewer.class);
         intent.putStringArrayListExtra("urls", urls);
         intent.putExtra("index", firstIndex);
-        ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(context, shareView,
-                "share_view");
-        ActivityCompat.startActivity(context, intent, compat.toBundle());
+        if (shareView == null) {
+            context.startActivity(intent);
+        } else {
+            ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(context, shareView, SHARE_VIEW_TAG);
+            ActivityCompat.startActivity(context, intent, compat.toBundle());
+        }
+
+    }
+
+    /**
+     * 无需共享元素动画的多图
+     * @param context
+     * @param images
+     * @param firstIndex
+     * @param <T>
+     */
+    public static <T extends DragImage> void startWithoutElement(Activity context, List<T> images, int firstIndex) {
+        startWithElement(context, images, firstIndex, null);
     }
 
     /**
@@ -81,9 +109,12 @@ public class DragImageViewer extends AppCompatActivity {
         Intent intent = new Intent(context, DragImageViewer.class);
         intent.putStringArrayListExtra("urls", urls);
         intent.putExtra("index", firstIndex);
-        ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(context, shareView,
-                "share_view");
-        ActivityCompat.startActivity(context, intent, compat.toBundle());
+        if (shareView == null) {
+            context.startActivity(intent);
+        } else {
+            ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(context, shareView, SHARE_VIEW_TAG);
+            ActivityCompat.startActivity(context, intent, compat.toBundle());
+        }
     }
 
     @Override
@@ -126,7 +157,7 @@ public class DragImageViewer extends AppCompatActivity {
                 }
                 PhotoView sharedView = layout.findViewById(R.id.image_view);
                 sharedElements.clear();
-                sharedElements.put("share_view", sharedView);
+                sharedElements.put(SHARE_VIEW_TAG, sharedView);
                 //这里重新适配一下图片，防止gif图在启动的时候停止动画
                 if (isStart) {
                     GlideUtils.loadImage(DragImageViewer.this, pictureList.get(firstDisplayImageIndex), sharedView);

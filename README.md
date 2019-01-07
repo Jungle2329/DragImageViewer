@@ -27,7 +27,7 @@ ActivityCompat.setExitSharedElementCallback(activity, new android.support.v4.app
     @Override
     public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
         super.onMapSharedElements(names, sharedElements);
-        sharedElements.put("share_view", ll_user_anwser);
+        sharedElements.put(DragImageViewer.SHARE_VIEW_TAG, ll_user_anwser);
     }
 });
 }

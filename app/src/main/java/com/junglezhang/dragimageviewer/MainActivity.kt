@@ -29,11 +29,10 @@ class MainActivity : AppCompatActivity() {
         val mImageEntity2 = ImageEntity(banner2)
         pictureList.add(mImageEntity1)
         pictureList.add(mImageEntity2)
-
         for (i in 0 until 2) {
             val imageView = ll_container.getChildAt(i) as ImageView
             GlideUtils.loadImage(this, pictureList[i].image, imageView)
-            imageView.setOnClickListener { DragImageViewer.startWithElement(this@MainActivity, pictureList, i, imageView) }
+            imageView.setOnClickListener { DragImageViewer.startWithElement(this@MainActivity, pictureList, i, null) }
 
         }
         setSharedElementCallback(this)

@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         for (i in 0 until 2) {
             val imageView = ll_container.getChildAt(i) as ImageView
             GlideUtils.loadImage(this, pictureList[i].image, imageView)
-            imageView.setOnClickListener { DragImageViewer.startWithElement(this@MainActivity, pictureList, i, null) }
+            imageView.setOnClickListener { DragImageViewer.startWithElement(this@MainActivity, pictureList, i, imageView) }
 
         }
         setSharedElementCallback(this)
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
                 if (mReenterState != null) {
                     val index = mReenterState!!.getInt("index", 0)
                     sharedElements.clear()
-                    sharedElements["share_view"] = ll_container.getChildAt(index)
+                    sharedElements[DragImageViewer.SHARE_VIEW_TAG] = ll_container.getChildAt(index)
                     mReenterState = null
                 }
             }

@@ -2,6 +2,7 @@ package com.junglezhang.dragimageviewlib;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -48,6 +49,7 @@ public class DragImageViewer extends AppCompatActivity {
 
     /**
      * 无需共享元素动画的单图
+     *
      * @param context
      * @param image
      * @param firstIndex
@@ -74,6 +76,7 @@ public class DragImageViewer extends AppCompatActivity {
         intent.putExtra("index", firstIndex);
         if (shareView == null) {
             context.startActivity(intent);
+            context.overridePendingTransition(R.anim.fad_in, R.anim.fad_out);
         } else {
             ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(context, shareView, SHARE_VIEW_TAG);
             ActivityCompat.startActivity(context, intent, compat.toBundle());
@@ -83,6 +86,7 @@ public class DragImageViewer extends AppCompatActivity {
 
     /**
      * 无需共享元素动画的多图
+     *
      * @param context
      * @param images
      * @param firstIndex
@@ -111,6 +115,7 @@ public class DragImageViewer extends AppCompatActivity {
         intent.putExtra("index", firstIndex);
         if (shareView == null) {
             context.startActivity(intent);
+            context.overridePendingTransition(R.anim.fad_in, R.anim.fad_out);
         } else {
             ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(context, shareView, SHARE_VIEW_TAG);
             ActivityCompat.startActivity(context, intent, compat.toBundle());
@@ -120,8 +125,18 @@ public class DragImageViewer extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            getWindow().setEnterTransition(new Fade().setDuration(0));
+//            getWindow().setExitTransition(new Fade().setDuration(0));
+        }
         setContentView(R.layout.activity_photo_browse);
         initView();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.fad_in, R.anim.fad_out);
     }
 
     public void initView() {

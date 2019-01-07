@@ -2,7 +2,6 @@ package com.junglezhang.dragimageviewlib;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -125,10 +124,6 @@ public class DragImageViewer extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            getWindow().setEnterTransition(new Fade().setDuration(0));
-//            getWindow().setExitTransition(new Fade().setDuration(0));
-        }
         setContentView(R.layout.activity_photo_browse);
         initView();
     }

@@ -2,6 +2,7 @@ package com.junglezhang.dragimageviewlib;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -201,7 +202,6 @@ public class DragImageViewer extends AppCompatActivity {
                 View layout = LayoutInflater.from(DragImageViewer.this).inflate(R.layout.layout_browse, null);
                 ImageView iv = layout.findViewById(R.id.image_view);
                 GlideUtils.loadImage(DragImageViewer.this, pictureList.get(position), iv);
-                layout.setOnClickListener(onClickListener);
                 container.addView(layout);
                 layout.setTag(position);
                 if (position == firstDisplayImageIndex) {
@@ -244,23 +244,15 @@ public class DragImageViewer extends AppCompatActivity {
 
             @Override
             public void onPictureClick() {
-                finishAfterTransition();
+                finishThis();
             }
 
             @Override
             public void onPictureRelease(View view) {
-                finishAfterTransition();
+                finishThis();
             }
         });
     }
-
-
-    View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            finishAfterTransition();
-        }
-    };
 
 
     // 初始化每个view的image
@@ -277,15 +269,24 @@ public class DragImageViewer extends AppCompatActivity {
             return;
         }
         mCurImage = currentLayout.findViewById(R.id.image_view);
+        mCurImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishThis();
+            }
+        });
         imageViewPager.setCurrentShowView(mCurImage);
     }
 
 
-    @Override
-    public void finishAfterTransition() {
+    private void finishThis() {
         Intent intent = new Intent();
         intent.putExtra("index", imageViewPager.getCurrentItem());
         setResult(RESULT_OK, intent);
-        super.finishAfterTransition();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            finishAfterTransition();
+        } else {
+            finish();
+        }
     }
 }

@@ -1,6 +1,10 @@
 # DragImageViewer
 [![](https://jitpack.io/v/Jungle2329/DragImageViewer.svg)](https://jitpack.io/#Jungle2329/DragImageViewer)
 
+
+[使用方法](https://www.jianshu.com/p/7d490d5868a9)
+
+
 引入
 ```
 dependencies {

@@ -8,7 +8,7 @@ import com.bumptech.glide.Glide;
 /**
  * Created by Jungle on 2018/12/24 0024.
  *
- * @desc TODO
+ * @desc 添加支持gif
  */
 
 public class GlideUtils {

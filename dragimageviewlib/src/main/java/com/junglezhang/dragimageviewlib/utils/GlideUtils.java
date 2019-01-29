@@ -12,8 +12,8 @@ import com.bumptech.glide.Glide;
  */
 
 public class GlideUtils {
+
     public static void loadImage(Context mContext, String path, ImageView iv) {
-        Glide.with(mContext).load(path).into(iv);
         if (path.endsWith(".gif")) {
             Glide.with(mContext).asGif().load(path).into(iv);
         } else {

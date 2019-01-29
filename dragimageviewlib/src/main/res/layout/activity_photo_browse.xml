@@ -11,8 +11,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="10dp">
+        android:layout_gravity="left|bottom"
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/tv_current_page"
@@ -37,4 +37,15 @@
             android:textColor="#ffffff"
             android:textSize="16sp" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_download"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:gravity="center"
+        android:padding="15dp"
+        android:text="保存"
+        android:textColor="#ffffff"
+        android:textSize="16sp" />
 </FrameLayout>
